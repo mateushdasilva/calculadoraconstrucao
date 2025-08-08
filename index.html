@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Averbação de Construção</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f5f1;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: #fff;
+            padding: 35px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #27ae60;
+        }
+        h1 {
+            text-align: center;
+            color: #1e8449;
+            margin-bottom: 25px;
+            font-size: 2em;
+            font-weight: 700;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 25px;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #555;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .tabs button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #27ae60;
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .tabs button.active {
+            color: #27ae60;
+        }
+        .tabs button.active::after {
+            transform: scaleX(1);
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+        }
+        .calc-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        .calc-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        #resultado {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f8f5;
+            border-left: 5px solid #27ae60;
+            border-radius: 8px;
+            line-height: 1.7;
+            font-size: 1.1em;
+            animation: fadeIn 0.5s;
+        }
+        #resultado h3 {
+            margin-top: 0;
+            color: #1e8449;
+        }
+        #resultado hr {
+            border: none;
+            border-top: 1px solid #bce0d1;
+            margin: 15px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Calculadora de Averbação</h1>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="primeira">1ª Averbação</button>
+            <button class="tab-button" data-tab="complementar">Averbação Complementar</button>
+        </div>
+
+        <div id="form-primeira" class="form-section active" data-tab-content="primeira">
+            <div class="form-group">
+                <label for="p-terreno-area">Área Total do Terreno (m²)</label>
+                <input type="number" id="p-terreno-area" placeholder="Ex: 600">
+            </div>
+            <div class="form-group">
+                <label for="p-terreno-valor">Valor Total do Terreno (R$)</label>
+                <input type="text" inputmode="decimal" id="p-terreno-valor" placeholder="Ex: 300.000,00">
+            </div>
+            <div class="form-group">
+                <label for="p-construcao-area">Área da Construção a Averbar (m²)</label>
+                <input type="number" id="p-construcao-area" placeholder="Ex: 200">
+            </div>
+            <div class="form-group">
+                <label for="p-construcao-valor">Valor da Construção a Averbar (R$)</label>
+                <input type="text" inputmode="decimal" id="p-construcao-valor" placeholder="Ex: 250.000,00">
+            </div>
+            <button class="calc-button" onclick="calcularPrimeiraAverbacao()">Calcular</button>
+        </div>
+        
+        <div id="form-complementar" class="form-section" data-tab-content="complementar">
+            <div class="form-group">
+                <label for="c-terreno-area">Área Total do Terreno (m²)</label>
+                <input type="number" id="c-terreno-area" placeholder="Ex: 400">
+            </div>
+            <div class="form-group">
+                <label for="c-terreno-valor">Valor Total do Terreno (R$)</label>
+                <input type="text" inputmode="decimal" id="c-terreno-valor" placeholder="Ex: 200.000,00">
+            </div>
+             <div class="form-group">
+                <label for="c-construcao-previa-area">Área Total JÁ Averbadada (m²)</label>
+                <input type="number" id="c-construcao-previa-area" placeholder="Ex: 300">
+            </div>
+            <div class="form-group">
+                <label for="c-construcao-nova-area">Área da Construção COMPLEMENTAR (m²)</label>
+                <input type="number" id="c-construcao-nova-area" placeholder="Ex: 150">
+            </div>
+            <div class="form-group">
+                <label for="c-construcao-nova-valor">Valor da Construção COMPLEMENTAR (R$)</label>
+                <input type="text" inputmode="decimal" id="c-construcao-nova-valor" placeholder="Ex: 180.000,00">
+            </div>
+            <button class="calc-button" onclick="calcularAverbacaoComplementar()">Calcular</button>
+        </div>
+
+        <div id="resultado" class="hidden"></div>
+    </div>
+
+    <script>
+        // --- SCRIPT PARA AS ABAS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabContainer = document.querySelector('.tabs');
+            tabContainer.addEventListener('click', (event) => {
+                const clickedButton = event.target.closest('.tab-button');
+                if (!clickedButton) return;
+                const tabButtons = tabContainer.querySelectorAll('.tab-button');
+                const formSections = document.querySelectorAll('.form-section');
+                const targetTab = clickedButton.dataset.tab;
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                formSections.forEach(form => form.classList.remove('active'));
+
+                clickedButton.classList.add('active');
+                document.querySelector(`.form-section[data-tab-content="${targetTab}"]`).classList.add('active');
+                
+                document.getElementById('resultado').classList.add('hidden');
+            });
+
+            // --- NOVO: Adiciona o listener de formatação de moeda aos campos de valor ---
+            const camposMoeda = ['p-terreno-valor', 'p-construcao-valor', 'c-terreno-valor', 'c-construcao-nova-valor'];
+            camposMoeda.forEach(id => {
+                document.getElementById(id).addEventListener('input', formatarMoeda);
+            });
+        });
+
+        // --- NOVO: Função para formatar o valor como moeda enquanto o usuário digita ---
+        function formatarMoeda(event) {
+            const input = event.target;
+            let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+            if (valor === "") return;
+
+            // Formata o valor para o padrão BRL (ex: 1.234,56)
+            valor = (parseInt(valor, 10) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2
+            });
+            
+            input.value = valor;
+        }
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // --- ATUALIZADO: Função para ler o valor do input formatado ---
+        function getInputAsFloat(id) {
+            const valorFormatado = document.getElementById(id).value;
+            if (valorFormatado === '') return 0;
+            // Converte '1.234,56' para 1234.56 para o cálculo
+            const valorNumerico = parseFloat(valorFormatado.replace(/\./g, '').replace(',', '.'));
+            return valorNumerico || 0;
+        }
+        
+        function getAreaInput(id){
+            const valor = document.getElementById(id).value;
+            return parseFloat(valor) || 0;
+        }
+        
+        function validateInputs(inputs) {
+            for (const key in inputs) {
+                if (isNaN(inputs[key]) || inputs[key] <= 0) {
+                    // Exceção para área prévia, que pode ser zero
+                    if (key === 'areaPrevia' && inputs[key] === 0) continue;
+
+                    alert(`Por favor, preencha o campo "${key}" com um valor positivo.`);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function displayResult(htmlContent) {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = htmlContent;
+            resultadoDiv.classList.remove('hidden');
+        }
+        
+        function calcularPrimeiraAverbacao() {
+            const areaTerreno = getAreaInput('p-terreno-area');
+            const valorTerreno = getInputAsFloat('p-terreno-valor');
+            const areaConstrucao = getAreaInput('p-construcao-area');
+            const valorConstrucao = getInputAsFloat('p-construcao-valor');
+
+            if (!validateInputs({ areaTerreno, valorTerreno, areaConstrucao, valorConstrucao })) return;
+
+            let proporcao = areaConstrucao / areaTerreno;
+            proporcao = Math.min(proporcao, 1); 
+
+            const valorProporcionalTerreno = valorTerreno * proporcao;
+            const valorTotalAverbacao = valorConstrucao + valorProporcionalTerreno;
+
+            displayResult(`
+                <h3>Resultado do Cálculo</h3>
+                <p><strong>Valor da Construção:</strong> ${formatCurrency(valorConstrucao)}</p>
+                <p><strong>Proporção do Terreno Considerada:</strong> ${(proporcao * 100).toFixed(2)}%</p>
+                <p><strong>Valor Proporcional do Terreno:</strong> ${formatCurrency(valorProporcionalTerreno)}</p>
+                <hr>
+                <p><strong>VALOR TOTAL PARA AVERBAÇÃO: ${formatCurrency(valorTotalAverbacao)}</strong></p>
+            `);
+        }
+
+        function calcularAverbacaoComplementar() {
+            const areaTerrenoTotal = getAreaInput('c-terreno-area');
+            const valorTerrenoTotal = getInputAsFloat('c-terreno-valor');
+            const areaPrevia = getAreaInput('c-construcao-previa-area');
+            const areaNova = getAreaInput('c-construcao-nova-area');
+            const valorNovaConstrucao = getInputAsFloat('c-construcao-nova-valor');
+            
+            if (!validateInputs({ areaTerrenoTotal, valorTerrenoTotal, areaNova, valorNovaConstrucao, areaPrevia })) return;
+
+            const areaTerrenoRemanescente = Math.max(0, areaTerrenoTotal - areaPrevia);
+            const areaTerrenoConsiderada = Math.min(areaNova, areaTerrenoRemanescente);
+            const proporcao = areaTerrenoTotal > 0 ? areaTerrenoConsiderada / areaTerrenoTotal : 0;
+            
+            const valorProporcionalTerreno = valorTerrenoTotal * proporcao;
+            const valorTotalAverbacao = valorNovaConstrucao + valorProporcionalTerreno;
+
+            displayResult(`
+                <h3>Resultado do Cálculo (Complementar)</h3>
+                <p>Área Remanescente do Terreno: <strong>${areaTerrenoRemanescente.toFixed(2)} m²</strong></p>
+                <p>Área do Terreno Considerada: <strong>${areaTerrenoConsiderada.toFixed(2)} m²</strong> (menor valor entre área nova e remanescente)</p>
+                <hr>
+                <p><strong>Valor da Construção Complementar:</strong> ${formatCurrency(valorNovaConstrucao)}</p>
+                <p><strong>Valor Proporcional do Terreno:</strong> ${formatCurrency(valorProporcionalTerreno)}</p>
+                <hr>
+                <p><strong>VALOR TOTAL PARA AVERBAÇÃO: ${formatCurrency(valorTotalAverbacao)}</strong></p>
+            `);
+        }
+    </script>
+
+</body>
+</html>
