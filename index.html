@@ -220,14 +220,14 @@
                 document.getElementById('resultado').classList.add('hidden');
             });
 
-            // --- NOVO: Adiciona o listener de formatação de moeda aos campos de valor ---
+            // --- Adiciona o listener de formatação de moeda aos campos de valor ---
             const camposMoeda = ['p-terreno-valor', 'p-construcao-valor', 'c-terreno-valor', 'c-construcao-nova-valor'];
             camposMoeda.forEach(id => {
                 document.getElementById(id).addEventListener('input', formatarMoeda);
             });
         });
 
-        // --- NOVO: Função para formatar o valor como moeda enquanto o usuário digita ---
+        // --- Função para formatar o valor como moeda enquanto o usuário digita ---
         function formatarMoeda(event) {
             const input = event.target;
             let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
@@ -335,3 +335,4 @@
 </body>
 
 </html>
+
